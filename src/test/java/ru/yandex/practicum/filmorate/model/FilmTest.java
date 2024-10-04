@@ -10,6 +10,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class FilmTest {
     LocalDate localDate = LocalDate.now();
     Film film;
+
     @BeforeEach
     void setUp() {
 

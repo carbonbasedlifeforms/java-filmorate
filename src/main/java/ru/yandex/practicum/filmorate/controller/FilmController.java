@@ -16,8 +16,8 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/films")
 public class FilmController {
-    private final static LocalDate CINEMA_BDAY = LocalDate.of(1895, 12, 28);
-    private final static int MAX_DESC = 200;
+    private static final LocalDate CINEMA_BDAY = LocalDate.of(1895, 12, 28);
+    private static final int MAX_DESC = 200;
     Map<Long, Film> films = new HashMap<>();
 
     @GetMapping
@@ -34,9 +34,9 @@ public class FilmController {
             if (film.getDescription().length() > MAX_DESC) {
                 throw new ValidationException("Description must be not more 200 symbols");
             }
-        film.setId(getNextId());
-        films.put(film.getId(), film);
-        log.info("film {} added", film.getName());
+            film.setId(getNextId());
+            films.put(film.getId(), film);
+            log.info("film {} added", film.getName());
         } catch (ValidationException e) {
             log.error(e.getMessage());
             throw new RuntimeException(e);

@@ -5,11 +5,12 @@ import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class UserTest {
     User user;
     LocalDate bday = LocalDate.now().minusYears(40);
+
     @BeforeEach
     void setUp() {
         user = new User();
