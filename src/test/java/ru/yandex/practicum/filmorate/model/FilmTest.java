@@ -10,6 +10,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class FilmTest {
     LocalDate localDate = LocalDate.now();
     Film film;
+    Film anotherFilm;
 
     @BeforeEach
     void setUp() {
@@ -20,6 +21,14 @@ class FilmTest {
         film.setDescription("description");
         film.setReleaseDate(localDate);
         film.setDuration(100);
+
+        anotherFilm = new Film();
+        anotherFilm.setId(1L);
+        anotherFilm.setName("name");
+        anotherFilm.setDescription("description");
+        anotherFilm.setReleaseDate(localDate);
+        anotherFilm.setDuration(100);
+
     }
 
     @Test
@@ -79,33 +88,16 @@ class FilmTest {
 
     @Test
     void testEquals() {
-        Film film2 = new Film();
-        film2.setId(1L);
-        film2.setName("name");
-        film2.setDescription("description");
-        film2.setReleaseDate(localDate);
-        film2.setDuration(100);
-        assertEquals(film, film2);
+        assertEquals(film, anotherFilm);
     }
 
     @Test
     void testHashCode() {
-        Film film2 = new Film();
-        film2.setId(1L);
-        film2.setName("name");
-        film2.setDescription("description");
-        film2.setReleaseDate(localDate);
-        film2.setDuration(100);
-        assertEquals(film.hashCode(), film2.hashCode());
+        assertEquals(film.hashCode(), anotherFilm.hashCode());
     }
 
     @Test
     void testToString() {
-        film.setId(1L);
-        film.setName("name");
-        film.setDescription("description");
-        film.setReleaseDate(localDate);
-        film.setDuration(100);
         assertEquals("Film(id=1, name=name, description=description, releaseDate="
                 + localDate.toString() + ", duration=100)", film.toString());
     }

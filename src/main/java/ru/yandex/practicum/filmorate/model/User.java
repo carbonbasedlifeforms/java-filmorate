@@ -7,14 +7,14 @@ import java.time.LocalDate;
 
 @Data
 public class User {
-    @Positive
     private Long id;
 
+    @NotEmpty
     @Email
     private String email;
 
-    @NotNull
-    @NotBlank
+    @NotEmpty
+    @Pattern(regexp = "\\S+")
     private String login;
 
     private String name;

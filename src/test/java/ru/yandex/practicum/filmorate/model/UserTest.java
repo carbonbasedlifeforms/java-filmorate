@@ -9,6 +9,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class UserTest {
     User user;
+    User anotherUser;
     LocalDate bday = LocalDate.now().minusYears(40);
 
     @BeforeEach
@@ -19,6 +20,13 @@ class UserTest {
         user.setLogin("test");
         user.setName("Test");
         user.setBirthday(bday);
+
+        anotherUser = new User();
+        anotherUser.setId(1L);
+        anotherUser.setEmail("test@test.com");
+        anotherUser.setLogin("test");
+        anotherUser.setName("Test");
+        anotherUser.setBirthday(bday);
     }
 
     @Test
@@ -78,24 +86,12 @@ class UserTest {
 
     @Test
     void testEquals() {
-        User user2 = new User();
-        user2.setId(1L);
-        user2.setEmail("test@test.com");
-        user2.setLogin("test");
-        user2.setName("Test");
-        user2.setBirthday(bday);
-        assertEquals(user, user2);
+        assertEquals(user, anotherUser);
     }
 
     @Test
     void testHashCode() {
-        User user2 = new User();
-        user2.setId(1L);
-        user2.setEmail("test@test.com");
-        user2.setLogin("test");
-        user2.setName("Test");
-        user2.setBirthday(bday);
-        assertEquals(user.hashCode(), user2.hashCode());
+        assertEquals(user.hashCode(), anotherUser.hashCode());
     }
 
     @Test
