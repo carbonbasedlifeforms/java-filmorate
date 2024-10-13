@@ -14,7 +14,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("/users")
 public class UserController {
-    private Map<Long, User> users = new HashMap<>();
+    private final Map<Long, User> users = new HashMap<>();
 
     @GetMapping
     public Collection<User> getUsers() {
@@ -38,7 +38,7 @@ public class UserController {
 
     @PutMapping
     public User updateUser(@Valid @RequestBody User user) {
-        User existsUser = null;
+        User existsUser;
         try {
             existsUser = users.entrySet().stream()
                     .filter(x -> x.getKey() == user.getId())

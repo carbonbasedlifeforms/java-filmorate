@@ -16,7 +16,7 @@ import java.util.Map;
 @RequestMapping("/films")
 public class FilmController {
     private static final LocalDate CINEMA_BDAY = LocalDate.of(1895, 12, 28);
-    private Map<Long, Film> films = new HashMap<>();
+    private final Map<Long, Film> films = new HashMap<>();
 
     @GetMapping
     public Collection<Film> getFilms() {
@@ -40,7 +40,7 @@ public class FilmController {
 
     @PutMapping
     public Film updateFilm(@Valid @RequestBody Film film) {
-        Film existFilm = null;
+        Film existFilm;
         try {
             existFilm = films.entrySet().stream()
                     .filter(x -> x.getKey() == film.getId())
@@ -52,6 +52,7 @@ public class FilmController {
             existFilm.setDescription(film.getDescription());
             existFilm.setName(film.getName());
             existFilm.setDuration(film.getDuration());
+            log.info("film {} updated", film.getName());
         } catch (ValidationException e) {
             log.error(e.getMessage());
             throw new RuntimeException(e.getMessage());
