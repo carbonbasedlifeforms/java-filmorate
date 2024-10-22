@@ -25,7 +25,6 @@ public class InMemoryUserStorage implements UserStorage {
 
     @Override
     public List<User> getFriends(User user) {
-        //TODO
         final Set<Long> userFriends = Optional.ofNullable(friends.get(user.getId())).orElse(Set.of());
         return userFriends.stream()
                 .map(x -> Optional.ofNullable(users.get(x)))
