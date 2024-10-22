@@ -3,13 +3,24 @@ package ru.yandex.practicum.filmorate.controller;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.service.FilmService;
+import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
+import ru.yandex.practicum.filmorate.storage.film.InMemoryFilmStorage;
+import ru.yandex.practicum.filmorate.storage.user.InMemoryUserStorage;
+import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 
 import java.time.LocalDate;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+// адаптировал тесты под новую реализацию
+// но на методы классов в пакетах service и storage не стал делать,
+// т.к. предполагаю что их в следующих спринтах придется полностью переписать
 class FilmControllerTest {
+    FilmStorage filmStorage;
+    UserStorage userStorage;
+    FilmService filmService;
     FilmController filmController;
     Film film;
     Film createdFilm;
@@ -18,7 +29,10 @@ class FilmControllerTest {
 
     @BeforeEach
     void setUp() {
-        filmController = new FilmController();
+        filmStorage = new InMemoryFilmStorage();
+        userStorage = new InMemoryUserStorage();
+        filmService = new FilmService(filmStorage, userStorage);
+        filmController = new FilmController(filmService);
         film = new Film();
         film.setName("testFilm");
         film.setDescription("testDescription");
