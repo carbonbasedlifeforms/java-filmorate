@@ -2,6 +2,7 @@ package ru.yandex.practicum.filmorate.storage.film;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.User;
@@ -17,12 +18,16 @@ public class InMemoryFilmStorage implements FilmStorage {
     private final Map<Long, Film> films = new HashMap<>();
     private final Map<Long, Set<Long>> likes = new HashMap<>();
 
-    public Optional<Film> getFilmById(long id) {
-        return Optional.ofNullable(films.get(id));
+    @Override
+    public Film getFilmById(long id) {
+        log.info("get film by id {}", id);
+        return Optional.ofNullable(films.get(id))
+                .orElseThrow(() -> new NotFoundException("film with id: " + id + " is not exists"));
     }
 
     @Override
     public Collection<Film> getFilms() {
+        log.info("get all films");
         return films.values();
 
     }
@@ -32,6 +37,7 @@ public class InMemoryFilmStorage implements FilmStorage {
         validateReleaseDate(film);
         film.setId(getNextId());
         films.put(film.getId(), film);
+        log.info("film {} added", film.getName());
         return film;
     }
 
@@ -39,6 +45,7 @@ public class InMemoryFilmStorage implements FilmStorage {
     public Film updateFilm(Film film) {
         validateReleaseDate(film);
         films.put(film.getId(), film);
+        log.info("film {} updated", film.getName());
         return film;
     }
 
@@ -46,20 +53,23 @@ public class InMemoryFilmStorage implements FilmStorage {
     public void addLike(Film film, User user) {
         final Set<Long> filmLikes = likes.computeIfAbsent(film.getId(), id -> new HashSet<>());
         filmLikes.add(user.getId());
+        log.info("like of user {} for film {} added", user.getName(), film.getName());
     }
 
     @Override
     public void deleteLike(Film film, User user) {
         final Set<Long> filmLikes = likes.computeIfAbsent(film.getId(), id -> new HashSet<>());
         filmLikes.remove(user.getId());
+        log.info("like of user {} for film {} deleted", user.getName(), film.getName());
     }
 
     @Override
     public List<Film> getPopularFilms(int count) {
+        log.info("get top {} popular film",count);
         return likes.entrySet().stream()
                 .sorted((x, y) -> (y.getValue().size()) - x.getValue().size())
                 .limit(count)
-                .map(x -> getFilmById(x.getKey()).get())
+                .map(x -> getFilmById(x.getKey()))
                 .toList();
     }
 

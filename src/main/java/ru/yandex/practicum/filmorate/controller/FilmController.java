@@ -8,7 +8,6 @@ import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.service.FilmService;
 
 import java.util.Collection;
-import java.util.List;
 
 @Slf4j
 @RestController
@@ -39,23 +38,5 @@ public class FilmController {
     public Film updateFilm(@Valid @RequestBody Film film) {
         log.info("film {} updated", film.getName());
         return filmService.updateFilm(film);
-    }
-
-    @PutMapping("/{id}/like/{userId}")
-    public void addLike(@PathVariable long id, @PathVariable long userId) {
-        log.info("like with userId {} for film with id {} added", userId, id);
-        filmService.addLike(id, userId);
-    }
-
-    @DeleteMapping("/{id}/like/{userId}")
-    public void deleteLike(@PathVariable long id, @PathVariable long userId) {
-        log.info("like with userId {} for film with id {} deleted", userId, id);
-        filmService.deleteLike(id, userId);
-    }
-
-    @GetMapping("/popular")
-    public List<Film> getPopularFilms(@RequestParam(defaultValue = "10") final int count) {
-        log.info("return top {} popular films", count);
-        return filmService.getPopularFilms(count);
     }
 }
