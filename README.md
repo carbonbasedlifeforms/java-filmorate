@@ -20,7 +20,7 @@ Filmorate project repository.
 with cte as (
 select film_id
 , count(user_id) cnt
-from film_likes fl
+from film_likes
 group by film_id
 order by cnt desc
 limit 10
@@ -28,6 +28,6 @@ limit 10
 select f.name
 , cte.cnt
 from film f
-join cte on f.film_id = cte.film_id
+join cte on f.id = cte.film_id
 ;
 ```
