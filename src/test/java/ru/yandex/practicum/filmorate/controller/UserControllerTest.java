@@ -75,6 +75,7 @@ class UserControllerTest {
     }
 
     private void deleteUsers() {
+        jdbcTemplate.update("delete from friends");
         jdbcTemplate.update("delete from users");
     }
 }
