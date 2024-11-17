@@ -1,48 +1,58 @@
 package ru.yandex.practicum.filmorate.controller;
 
+import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.jdbc.core.JdbcTemplate;
 import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.service.FilmService;
-import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
-import ru.yandex.practicum.filmorate.storage.film.InMemoryFilmStorage;
-import ru.yandex.practicum.filmorate.storage.user.InMemoryUserStorage;
-import ru.yandex.practicum.filmorate.storage.user.UserStorage;
+import ru.yandex.practicum.filmorate.model.Genre;
+import ru.yandex.practicum.filmorate.model.Mpa;
 
 import java.time.LocalDate;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-// адаптировал тесты под новую реализацию
-// но на методы классов в пакетах service и storage не стал делать,
-// т.к. предполагаю что их в следующих спринтах придется полностью переписать
+@SpringBootTest
+@AutoConfigureTestDatabase
+@RequiredArgsConstructor(onConstructor_ = @Autowired)
 class FilmControllerTest {
-    FilmStorage filmStorage;
-    UserStorage userStorage;
-    FilmService filmService;
-    FilmController filmController;
+    private final FilmController filmController;
+    private final JdbcTemplate jdbcTemplate;
     Film film;
     Film createdFilm;
     Film anotherFilm;
+    Mpa mpa;
+    Genre genre;
     LocalDate filmDate = LocalDate.now();
 
     @BeforeEach
     void setUp() {
-        filmStorage = new InMemoryFilmStorage();
-        userStorage = new InMemoryUserStorage();
-        filmService = new FilmService(filmStorage, userStorage);
-        filmController = new FilmController(filmService);
+        deleteFilms();
+        mpa = new Mpa(1, "testMpa");
+        genre = new Genre();
+        genre.setId(1);
+        genre.setName("testGenre");
+
         film = new Film();
         film.setName("testFilm");
         film.setDescription("testDescription");
         film.setReleaseDate(filmDate);
         film.setDuration(100);
+        film.setMpa(mpa);
+        film.setGenres(List.of(genre));
+
         anotherFilm = new Film();
         anotherFilm.setName("testAnotherFilm");
         anotherFilm.setDescription("testAnotherDescription");
         anotherFilm.setReleaseDate(filmDate);
         anotherFilm.setDuration(150);
+        anotherFilm.setMpa(mpa);
+        anotherFilm.setGenres(List.of(genre));
     }
 
     @Test
@@ -55,7 +65,7 @@ class FilmControllerTest {
     @Test
     void createFilm() {
         createdFilm = filmController.createFilm(film);
-        assertEquals(1, film.getId());
+        assertEquals(film.getId(), createdFilm.getId());
         assertTrue(filmController.getFilms().contains(createdFilm));
     }
 
@@ -72,5 +82,10 @@ class FilmControllerTest {
         assertEquals("testUpdatedDescription", createdFilm.getDescription());
         assertEquals(filmDate.minusDays(1), createdFilm.getReleaseDate());
         assertEquals(123, createdFilm.getDuration());
+    }
+
+    private void deleteFilms() {
+        jdbcTemplate.update("delete from film_genres");
+        jdbcTemplate.update("delete from films");
     }
 }

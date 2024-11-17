@@ -1,22 +1,26 @@
 package ru.yandex.practicum.filmorate.controller;
 
+import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.jdbc.core.JdbcTemplate;
 import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.service.UserService;
-import ru.yandex.practicum.filmorate.storage.user.InMemoryUserStorage;
-import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 
 import java.time.LocalDate;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+@SpringBootTest
+@AutoConfigureTestDatabase
+@RequiredArgsConstructor(onConstructor_ = @Autowired)
 class UserControllerTest {
 
-    UserController userController;
-    UserService userService;
-    UserStorage userStorage;
+    private final UserController userController;
+    private final JdbcTemplate jdbcTemplate;
     User user;
     User createdUser;
     User anotherUser;
@@ -25,9 +29,7 @@ class UserControllerTest {
 
     @BeforeEach
     void setUp() {
-        userStorage = new InMemoryUserStorage();
-        userService = new UserService(userStorage);
-        userController = new UserController(userService);
+        deleteUsers();
         user = new User();
         user.setName("testName");
         user.setEmail("test@test.com");
@@ -66,12 +68,13 @@ class UserControllerTest {
 
     @Test
     void updateUser() {
-        userController.createUser(user);
-        user.setName("newName");
-        userController.updateUser(user);
-        assertEquals("newName", userController.getUsers().stream()
-                .map(User::getName)
-                .findFirst()
-                .get());
+        createdUser = userController.createUser(user);
+        createdUser.setName("newName");
+        userController.updateUser(createdUser);
+        assertEquals(userController.getUserById(createdUser.getId()).getName(), "newName");
+    }
+
+    private void deleteUsers() {
+        jdbcTemplate.update("delete from users");
     }
 }
