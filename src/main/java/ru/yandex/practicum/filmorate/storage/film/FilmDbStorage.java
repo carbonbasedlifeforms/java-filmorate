@@ -18,29 +18,29 @@ import java.util.List;
 @Repository
 @Primary
 public class FilmDbStorage extends BaseRepository<Film> implements FilmStorage {
-    public static final String SELECT_FILMS = """
+    private static final String SELECT_FILMS = """
             select f.id,f.name,f.description,f.release_date,f.duration,f.rating_mpa_id,mpa.name as mpa_name
             from films f
             left join rating_mpa mpa on f.rating_mpa_id = mpa.id
             """;
-    public static final String SELECT_FILM_BY_ID = """
+    private static final String SELECT_FILM_BY_ID = """
             select f.id,f.name,f.description,f.release_date,f.duration,f.rating_mpa_id,mpa.name as mpa_name
             from films f
             left join rating_mpa mpa on f.rating_mpa_id = mpa.id
             where f.id = ?
             """;
-    public static final String INSERT_FILM = """
+    private static final String INSERT_FILM = """
             insert into films(name,description,release_date,duration,rating_mpa_id)
             values(?,?,?,?,?)""";
-    public static final String UPDATE_FILM = """
+    private static final String UPDATE_FILM = """
             update films
             set name = ?, description = ?, release_date = ?, duration = ?, rating_mpa_id = ?
             where id = ?
             """;
-    public static final String INSERT_FILM_GENRES = "insert into film_genres(films_id,genres_id) values(?,?)";
-    public static final String INSERT_FILM_LIKES = "insert into film_likes(films_id,users_id) values(?,?)";
-    public static final String DELETE_FILM_LIKES = "delete from film_likes where films_id = ? and users_id = ?";
-    public static final String SELECT_POPULAR_FILMS = """
+    private static final String INSERT_FILM_GENRES = "insert into film_genres(films_id,genres_id) values(?,?)";
+    private static final String INSERT_FILM_LIKES = "insert into film_likes(films_id,users_id) values(?,?)";
+    private static final String DELETE_FILM_LIKES = "delete from film_likes where films_id = ? and users_id = ?";
+    private static final String SELECT_POPULAR_FILMS = """
             with cte as (
             select films_id from film_likes
             group by films_id
@@ -52,7 +52,7 @@ public class FilmDbStorage extends BaseRepository<Film> implements FilmStorage {
             join films f on f.id = cte.films_id
             left join rating_mpa mpa on f.rating_mpa_id = mpa.id
             """;
-    public static final String DELETE_FILM_GENRES = "delete from film_genres where films_id = ?";
+    private static final String DELETE_FILM_GENRES = "delete from film_genres where films_id = ?";
 
     public FilmDbStorage(JdbcTemplate jdbcTemplate, RowMapper<Film> mapper) {
         super(jdbcTemplate, mapper);

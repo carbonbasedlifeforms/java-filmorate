@@ -13,8 +13,8 @@ import java.util.Collection;
 @Slf4j
 @Repository
 public class MpaDbStorage extends BaseRepository<Mpa> implements MpaStorage {
-    public static final String SELECT_ALL = "select * from rating_mpa";
-    public static final String SELECT_BY_ID = "select * from rating_mpa where id = ?";
+    private static final String SELECT_ALL = "select * from rating_mpa";
+    private static final String SELECT_BY_ID = "select * from rating_mpa where id = ?";
 
     public MpaDbStorage(JdbcTemplate jdbcTemplate, RowMapper<Mpa> mapper) {
         super(jdbcTemplate, mapper);

@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.jdbc.core.JdbcTemplate;
 import ru.yandex.practicum.filmorate.model.User;
 
 import java.time.LocalDate;
@@ -19,6 +20,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class FriendControllerTest {
     private final FriendController friendController;
     private final UserController userController;
+    private final JdbcTemplate jdbcTemplate;
+
     User user;
     User createdUser;
     User createdFriend;
@@ -29,6 +32,8 @@ class FriendControllerTest {
 
     @BeforeEach
     void setUp() {
+        makeMrPropper();
+
         user = new User();
         user.setName("testName");
         user.setEmail("test@test.com");
@@ -83,5 +88,10 @@ class FriendControllerTest {
         friendController.addFriend(createdUser.getId(), commonFriend.getId());
         friendController.addFriend(anotherUser.getId(), commonFriend.getId());
         assertTrue(friendController.getCommonFriends(createdUser.getId(), anotherUser.getId()).contains(commonFriend));
+    }
+
+    private void makeMrPropper() {
+        jdbcTemplate.update("delete from friends");
+        jdbcTemplate.update("delete from users");
     }
 }

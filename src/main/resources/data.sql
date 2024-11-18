@@ -1,4 +1,4 @@
-insert into genres(id,name)
+merge into genres(id,name)
 values (1,'Комедия'),
        (2,'Драма'),
        (3,'Мультфильм'),
@@ -7,7 +7,7 @@ values (1,'Комедия'),
        (6,'Боевик')
 ;
 
-insert into rating_mpa(id,name)
+merge into rating_mpa(id,name)
 values (1,'G'),
        (2,'PG'),
        (3,'PG-13'),

@@ -13,9 +13,9 @@ import java.util.List;
 @Slf4j
 @Repository
 public class GenreDbStorage extends BaseRepository<Genre> implements GenreStorage {
-    public static final String SELECT_GENRES = "select * from genres";
-    public static final String SELECT_GENRE_BY_ID = "select * from genres where id = ?";
-    public static final String SELECT_FILM_GENRES = "select * from genres where id in " +
+    private static final String SELECT_GENRES = "select * from genres";
+    private static final String SELECT_GENRE_BY_ID = "select * from genres where id = ?";
+    private static final String SELECT_FILM_GENRES = "select * from genres where id in " +
             "(select genres_id from film_genres where films_id = ?)";
 
     public GenreDbStorage(JdbcTemplate jdbcTemplate, RowMapper<Genre> mapper) {

@@ -16,20 +16,20 @@ import java.util.List;
 @Repository
 @Primary
 public class UserDbStorage extends BaseRepository<User> implements UserStorage {
-    public static final String SELECT_USERS = "select * from users";
-    public static final String SELECT_USER_BY_ID = "select * from users where id = ?";
-    public static final String INSERT_USER = "insert into users (name, email, login, birthday) values (?, ?, ?, ?)";
-    public static final String UPDATE_USER = "update users set name = ?, email = ?, login = ?, birthday = ? " +
+    private static final String SELECT_USERS = "select * from users";
+    private static final String SELECT_USER_BY_ID = "select * from users where id = ?";
+    private static final String INSERT_USER = "insert into users (name, email, login, birthday) values (?, ?, ?, ?)";
+    private static final String UPDATE_USER = "update users set name = ?, email = ?, login = ?, birthday = ? " +
             "where id = ?";
-    public static final String SELECT_FRIENDS = """
+    private static final String SELECT_FRIENDS = """
               select u.*
               from users u
               join friends f on u.id = f.friends_id
               where f.users_id = ?
             """;
-    public static final String INSERT_FRIEND = "insert into friends(users_id, friends_id) values (?, ?)";
-    public static final String DELETE_FRIEND = "delete from friends where users_id = ? and friends_id = ?";
-    public static final String SELECT_COMMON_FRIENDS = """
+    private static final String INSERT_FRIEND = "insert into friends(users_id, friends_id) values (?, ?)";
+    private static final String DELETE_FRIEND = "delete from friends where users_id = ? and friends_id = ?";
+    private static final String SELECT_COMMON_FRIENDS = """
                 with cte as (
                 select friends_id from friends where users_id = ?
                 intersect

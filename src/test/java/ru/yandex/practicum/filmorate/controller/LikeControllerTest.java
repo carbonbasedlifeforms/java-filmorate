@@ -117,6 +117,7 @@ class LikeControllerTest {
     private void deleteFilms() {
         jdbcTemplate.update("delete from film_genres");
         jdbcTemplate.update("delete from film_likes");
+        jdbcTemplate.update("delete from users");
         jdbcTemplate.update("delete from films");
     }
 }

@@ -23,6 +23,7 @@ public class Film {
 
     @Positive
     private int duration;
+
     @NotNull
     private Mpa mpa;
 

@@ -1,11 +1,3 @@
-drop table if exists film_likes;
-drop table if exists film_genres;
-drop table if exists genres;
-drop table if exists films;
-drop table if exists friends;
-drop table if exists rating_mpa;
-drop table if exists users;
-
 create table if not exists users(
 	id 			bigint generated always as identity primary key,
 	name 		varchar(128) not null,
@@ -13,6 +5,9 @@ create table if not exists users(
 	login 		varchar(128) not null,
 	birthday	date
 );
+
+create unique index if not exists idx_users_login on users(login);
+create unique index if not exists idx_users_email on users(email);
 
 create table if not exists friends(
 	id 			bigint generated always as identity primary key,
