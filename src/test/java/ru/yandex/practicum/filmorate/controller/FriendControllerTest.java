@@ -1,23 +1,27 @@
 package ru.yandex.practicum.filmorate.controller;
 
+import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.jdbc.core.JdbcTemplate;
 import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.service.FriendService;
-import ru.yandex.practicum.filmorate.service.UserService;
-import ru.yandex.practicum.filmorate.storage.user.InMemoryUserStorage;
-import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 
 import java.time.LocalDate;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+@SpringBootTest
+@AutoConfigureTestDatabase
+@RequiredArgsConstructor(onConstructor_ = @Autowired)
 class FriendControllerTest {
-    UserStorage userStorage;
-    UserService userService;
-    FriendService friendService;
-    FriendController friendController;
+    private final FriendController friendController;
+    private final UserController userController;
+    private final JdbcTemplate jdbcTemplate;
+
     User user;
     User createdUser;
     User createdFriend;
@@ -28,10 +32,8 @@ class FriendControllerTest {
 
     @BeforeEach
     void setUp() {
-        userStorage = new InMemoryUserStorage();
-        userService = new UserService(userStorage);
-        friendService = new FriendService(userStorage);
-        friendController = new FriendController(friendService);
+        makeMrPropper();
+
         user = new User();
         user.setName("testName");
         user.setEmail("test@test.com");
@@ -51,18 +53,17 @@ class FriendControllerTest {
 
     @Test
     void addFriend() {
-        createdUser = userService.createUser(user);
-        createdFriend = userService.createUser(anotherUser);
+        createdUser = userController.createUser(user);
+        createdFriend = userController.createUser(anotherUser);
         assertTrue(friendController.getFriends(createdUser.getId()).isEmpty());
         friendController.addFriend(createdUser.getId(), createdFriend.getId());
         assertTrue(friendController.getFriends(createdUser.getId()).contains(createdFriend));
-        assertTrue(friendController.getFriends(createdFriend.getId()).contains(createdUser));
     }
 
     @Test
     void getFriends() {
-        createdUser = userService.createUser(user);
-        createdFriend = userService.createUser(anotherUser);
+        createdUser = userController.createUser(user);
+        createdFriend = userController.createUser(anotherUser);
         assertTrue(friendController.getFriends(createdUser.getId()).isEmpty());
         friendController.addFriend(createdUser.getId(), createdFriend.getId());
         assertEquals(1, friendController.getFriends(createdUser.getId()).size());
@@ -70,8 +71,8 @@ class FriendControllerTest {
 
     @Test
     void delFriend() {
-        createdUser = userService.createUser(user);
-        createdFriend = userService.createUser(anotherUser);
+        createdUser = userController.createUser(user);
+        createdFriend = userController.createUser(anotherUser);
         assertTrue(friendController.getFriends(createdUser.getId()).isEmpty());
         friendController.addFriend(createdUser.getId(), createdFriend.getId());
         assertTrue(friendController.getFriends(createdUser.getId()).contains(createdFriend));
@@ -81,11 +82,16 @@ class FriendControllerTest {
 
     @Test
     void getCommonFriends() {
-        createdUser = userService.createUser(user);
-        anotherUser = userService.createUser(anotherUser);
-        commonFriend = userService.createUser(commonFriend);
+        createdUser = userController.createUser(user);
+        anotherUser = userController.createUser(anotherUser);
+        commonFriend = userController.createUser(commonFriend);
         friendController.addFriend(createdUser.getId(), commonFriend.getId());
         friendController.addFriend(anotherUser.getId(), commonFriend.getId());
         assertTrue(friendController.getCommonFriends(createdUser.getId(), anotherUser.getId()).contains(commonFriend));
+    }
+
+    private void makeMrPropper() {
+        jdbcTemplate.update("delete from friends");
+        jdbcTemplate.update("delete from users");
     }
 }

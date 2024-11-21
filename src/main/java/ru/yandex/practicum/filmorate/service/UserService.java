@@ -26,12 +26,21 @@ public class UserService {
 
     public User createUser(User user) {
         log.info("creating user with name {}", user.getName());
+        checkUsernameEmptyUseLogin(user);
         return userStorage.createUser(user);
     }
 
     public User updateUser(User user) {
         userStorage.getUserById(user.getId());
+        checkUsernameEmptyUseLogin(user);
         log.info("updating user with name {}", user.getName());
         return userStorage.updateUser(user);
+    }
+
+    private void checkUsernameEmptyUseLogin(User user) {
+        if (user.getName() == null || user.getName().isBlank()) {
+            user.setName(user.getLogin());
+            log.info("username is empty, using login");
+        }
     }
 }
